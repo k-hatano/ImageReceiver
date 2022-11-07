@@ -9,6 +9,15 @@ import java.util.regex.*;
 public class ImageReceiverServer {
 	ImageReceiver parent;
 
+	private final String SEND_PAGE_HTML = 
+		"<script type='text/javascript'>"+
+		"function fileChanged(){ document.form1.submit(); }"+
+		"window.addEventListener('DOMContentLoaded', function(){ var form1 = document.getElementById('form1'); form1.addEventListener('dragenter', function(e){ e.stopPropagation(); e.preventDefault(); }); form1.addEventListener('dragover', function(e){ e.stopPropagation(); e.preventDefault(); }); form1.addEventListener('drop', function(e){ e.stopPropagation(); e.preventDefault(); console.dir(e.dataTransfer.files); document.form1.file1.files = e.dataTransfer.files; document.form1.submit(); }); });"+
+		"</script>"+
+		"<form style='position: absolute; width:100%; height: 100%; top:0; left:0; background:#eee;' id='form1' name='form1' action='http://localhost:3000' method='POST' enctype='multipart/form-data'>"+
+		"<input id='file1' type='file' name='file' onchange='fileChanged(this);'>"+
+		"</form>";
+
 	public ImageReceiverServer(ImageReceiver ImageReceiver) {
 		parent = ImageReceiver;
 
@@ -68,7 +77,7 @@ public class ImageReceiverServer {
 
 				inputStream.close();
 
-				String response = "<form action='http://localhost:3000' method='POST' enctype='multipart/form-data'><input type='file' name='file'><input type='submit'></form>";
+				String response = SEND_PAGE_HTML;
 
 				Headers responseHeaders = exchange.getResponseHeaders();
 				responseHeaders.set("Content-Type", "text/html");
