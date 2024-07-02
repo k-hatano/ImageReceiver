@@ -8,13 +8,14 @@ import java.util.regex.*;
 
 public class ImageReceiverServer {
 	ImageReceiver parent;
+	final int PORT_NO = 3000;
 
 	private final String SEND_PAGE_HTML = 
 		"<script type='text/javascript'>"+
 		"function fileChanged(){ document.form1.submit(); }"+
 		"window.addEventListener('DOMContentLoaded', function(){ var form1 = document.getElementById('form1'); form1.addEventListener('dragenter', function(e){ e.stopPropagation(); e.preventDefault(); }); form1.addEventListener('dragover', function(e){ e.stopPropagation(); e.preventDefault(); }); form1.addEventListener('drop', function(e){ e.stopPropagation(); e.preventDefault(); console.dir(e.dataTransfer.files); document.form1.file1.files = e.dataTransfer.files; document.form1.submit(); }); });"+
 		"</script>"+
-		"<form style='position: absolute; width:100%; height: 100%; top:0; left:0; background:#eee;' id='form1' name='form1' action='http://localhost:3000' method='POST' enctype='multipart/form-data'>"+
+		"<form style='position: absolute; width:100%; height: 100%; top:0; left:0; background:#eee;' id='form1' name='form1' action='http://localhost:" + PORT_NO + "' method='POST' enctype='multipart/form-data'>"+
 		"<input id='file1' type='file' name='file' onchange='fileChanged(this);'>"+
 		"</form>";
 
@@ -22,10 +23,13 @@ public class ImageReceiverServer {
 		parent = ImageReceiver;
 
 		try {
-		    HttpServer server = HttpServer.create(new InetSocketAddress(3000), 0);
+		    HttpServer server = HttpServer.create(new InetSocketAddress(PORT_NO), 0);
 		    server.createContext("/", new ImageReceiverServerHandler());
 		    server.start();
+		    parent.appendStringToInfo("Server started as localhost:" + PORT_NO);
 		} catch (IOException ex) {
+		    parent.appendStringToInfo("An error occurred");
+		    parent.appendExceptionToInfo(ex);
 			ex.printStackTrace();
 			System.exit(1);
 		}
@@ -35,6 +39,7 @@ public class ImageReceiverServer {
 	private class ImageReceiverServerHandler implements HttpHandler {
 		public void handle(HttpExchange exchange) {
 			try {
+			    parent.appendStringToInfo("Image received");
 				String boundary = null;
 
 				String startLine =
@@ -91,6 +96,8 @@ public class ImageReceiverServer {
 					parent.imageReceiverImport.importFromBinary(imageBytes);
 				}
 			} catch (Exception ex) {
+		    	parent.appendStringToInfo("An error occurred");
+	    		parent.appendExceptionToInfo(ex);
 				ex.printStackTrace();
 			}
 		}

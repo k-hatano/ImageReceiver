@@ -32,7 +32,7 @@ public class ImageReceiverCanvas extends Canvas implements MouseListener, MouseM
 		Image img = createImage(w, h);
 		Graphics2D grp = (Graphics2D)(img.getGraphics());
 
-		grp.setColor(new Color(255, 255, 255));
+		grp.setColor(new Color(218, 218, 218));
 		grp.fillRect(0, 0, w, h);
 
 		if (iFileImage != null) {

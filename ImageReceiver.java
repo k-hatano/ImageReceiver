@@ -8,13 +8,16 @@ import java.net.*;
 import javax.swing.*;
 
 public class ImageReceiver extends JFrame implements ActionListener {
-	JPanel pHeaderPanel, pCanvasPanel;
+	JPanel pHeaderPanel, pCanvasPanel, pFooterPanel;
 	JMenuBar mbMenuBar;
 	JMenu mFile,mServer;
 	JMenuItem miOpen,miQuit,miOpenSendPage;
 	ImageReceiverImport imageReceiverImport;
 	ImageReceiverCanvas imageReceiverCanvas;
 	ImageReceiverServer imageReceiverServer;
+	JTextArea taServerInfo;
+	JScrollPane spServerInfo;
+	String serverInfoContent = "";
 	
 	ImageReceiver() {
 		super();
@@ -57,8 +60,18 @@ public class ImageReceiver extends JFrame implements ActionListener {
 
 		add("Center", pCanvasPanel);
 
-		pHeaderPanel = new JPanel();
-		pHeaderPanel.setLayout(new BorderLayout());
+		// pHeaderPanel = new JPanel();
+		// pHeaderPanel.setLayout(new BorderLayout());
+
+		pFooterPanel = new JPanel();
+		pFooterPanel.setLayout(new BorderLayout());
+		pFooterPanel.setPreferredSize(new Dimension(0, 128));
+		add("South", pFooterPanel);
+
+		taServerInfo = new JTextArea();
+		spServerInfo = new JScrollPane(taServerInfo);
+		taServerInfo.setText(serverInfoContent);
+		pFooterPanel.add(spServerInfo);
 
 		addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent e){
@@ -94,6 +107,25 @@ public class ImageReceiver extends JFrame implements ActionListener {
 
 	public void closeWindow(){
 		System.exit(0);
+	}
+
+	public void appendStringToInfo(String str) {
+		serverInfoContent += str + "\r\n";
+		if (taServerInfo != null) {
+			taServerInfo.setText(serverInfoContent);
+			spServerInfo.getVerticalScrollBar().setValue(spServerInfo.getVerticalScrollBar().getMaximum());
+		}
+	}
+
+	public void appendExceptionToInfo(Exception ex) {
+		StringWriter sw = new StringWriter();
+		ex.printStackTrace(new PrintWriter(sw));
+		String exceptionAsString = sw.toString();
+		serverInfoContent += exceptionAsString + "\r\n";
+		if (taServerInfo != null) {
+			taServerInfo.setText(serverInfoContent);
+			spServerInfo.getVerticalScrollBar().setValue(spServerInfo.getVerticalScrollBar().getMaximum());
+		}
 	}
 
 	class Dropper extends DropTargetAdapter{

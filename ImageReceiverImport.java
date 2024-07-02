@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.*;
 import java.io.*;
 import java.util.*;
 import java.util.regex.*;
@@ -43,7 +44,8 @@ public class ImageReceiverImport {
 			System.out.println("importImage available=" + stream.available());
 			System.out.println("");
 
-            Image image = ImageIO.read(new File(path));
+            BufferedImage image = ImageIO.read(new File(path));
+			parent.appendStringToInfo("Size: " + (image.getWidth() + "x" + image.getHeight()));
 			this.parent.imageReceiverCanvas.iFileImage = image;
 			this.parent.imageReceiverCanvas.repaint();
         } catch ( IOException ex ) {
@@ -60,7 +62,8 @@ public class ImageReceiverImport {
 		try {
 			ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
 
-            Image image = ImageIO.read(stream);
+            BufferedImage image = ImageIO.read(stream);
+			parent.appendStringToInfo("Size: " + (image.getWidth() + "x" + image.getHeight()));
 			this.parent.imageReceiverCanvas.iFileImage = image;
 			this.parent.imageReceiverCanvas.repaint();
         } catch ( IOException ex ) {
